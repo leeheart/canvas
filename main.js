@@ -3,7 +3,7 @@ var context = yyy.getContext('2d')
 
 autoSetCanvas(yyy)
 
-listenToMouse(yyy)
+listenToUser(yyy)
 
 
 /**************************/
@@ -54,7 +54,7 @@ function drawLine(x1, y1, x2, y2) {
   context.closePath();
 }
 
-function listenToMouse(canvas) {
+function listenToUser(canvas) {
 
   var using = false
   var lastPoint = {
@@ -62,38 +62,78 @@ function listenToMouse(canvas) {
     y: undefined
   }
 
-  canvas.onmousedown = function (aaa) {
-    var x = aaa.clientX
-    var y = aaa.clientY
-    using = true
-    if (eraserEnabled) {
-      context.clearRect(x, y, 10, 10)
-    } else {
-      lastPoint = {
+  if (document.body.ontouchstart !== undefined) {
+    //触控设备
+    canvas.ontouchstart = function (aaa) {
+      var x = aaa.touches[0].clientX
+      var y = aaa.touches[0].clientY
+      using = true
+      if (eraserEnabled) {
+        context.clearRect(x, y, 10, 10)
+      } else {
+        lastPoint = {
+          x: x,
+          y: y
+        }
+      }
+    }
+
+    canvas.ontouchmove = function (aaa) {
+      var x = aaa.touches[0].clientX
+      var y = aaa.touches[0].clientY
+      var newPoint = {
         x: x,
         y: y
       }
-    }
-  }
-
-  canvas.onmousemove = function (aaa) {
-    var x = aaa.clientX
-    var y = aaa.clientY
-    var newPoint = {
-      x: x,
-      y: y
-    }
-    if (using) {
-      if (eraserEnabled) {
-        context.clearRect(x - 10, y - 10, 20, 20)
-      } else {
-        drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y)
-        lastPoint = newPoint
+      if (using) {
+        if (eraserEnabled) {
+          context.clearRect(x - 10, y - 10, 20, 20)
+        } else {
+          drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y)
+          lastPoint = newPoint
+        }
       }
     }
-  }
 
-  canvas.onmouseup = function (aaa) {
-    using = false
+
+    canvas.ontouchend = function (aaa) {
+      using = false
+    }
+  } else {
+    //非触控设备
+    canvas.onmousedown = function (aaa) {
+      var x = aaa.clientX
+      var y = aaa.clientY
+      using = true
+      if (eraserEnabled) {
+        context.clearRect(x, y, 10, 10)
+      } else {
+        lastPoint = {
+          x: x,
+          y: y
+        }
+      }
+    }
+
+    canvas.onmousemove = function (aaa) {
+      var x = aaa.clientX
+      var y = aaa.clientY
+      var newPoint = {
+        x: x,
+        y: y
+      }
+      if (using) {
+        if (eraserEnabled) {
+          context.clearRect(x - 10, y - 10, 20, 20)
+        } else {
+          drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y)
+          lastPoint = newPoint
+        }
+      }
+    }
+
+    canvas.onmouseup = function (aaa) {
+      using = false
+    }
   }
 }
