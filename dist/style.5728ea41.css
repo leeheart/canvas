@@ -36,9 +36,14 @@ canvas {
   transition: all 0.3s;
   margin: 0 10px;
 }
-
+.actions svg:nth-child(1){
+  fill: #999;
+}
+.actions svg:nth-child(2){
+  fill: #999;
+}
 .actions svg.active{
-  fill: red;
+  fill: #000;
   transform: scale(1.2);
 }
 
@@ -90,3 +95,5 @@ canvas {
   width: 40px;
   border-top: 6px solid #000;
 }
+
+/*# sourceMappingURL=style.5728ea41.css.map */
